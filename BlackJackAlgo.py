@@ -32,3 +32,12 @@ def black_jack_dHand(deck :list[int], player_score :int, player_cards :list, dea
         return False
 
     return True
+
+def black_jack_strategy(deck :list[int], player_score :int, player_cards :list, dealer_cards :list):
+    """ Strategy to be used in simulate.py """
+    
+    # Simple
+    # return black_jack_simple(deck, player_score, player_cards)
+
+    # Dealer's Hand
+    return black_jack_dHand(deck, player_score, player_cards, dealer_cards)

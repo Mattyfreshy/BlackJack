@@ -19,8 +19,7 @@ def play_sim(deck :list[int]):
             is_game_over = True
         else:
             # Strategy Section
-            # is_game_over = algo.black_jack_simple(deck, player_score, player_cards)
-            is_game_over = algo.black_jack_dHand(deck, player_score, player_cards, dealer_cards)
+            is_game_over = algo.black_jack_strategy(deck, player_score, player_cards, dealer_cards)
 
     while dealer_score != 0 and dealer_score < 17:
         deal_card(deck, dealer_cards)
@@ -40,7 +39,7 @@ def simulate_games(num_games :int, num_decks :int) -> float:
              wins += 1
 
         # Progress bar
-        print(f"{(i / num_games) * 100:.2f}%", end='\r')
+        print(f" {(i / num_games) * 100:.2f}%", end='\r')
 
     win_rate = (wins / num_games) * 100
     return win_rate
