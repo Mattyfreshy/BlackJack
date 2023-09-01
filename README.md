@@ -18,7 +18,8 @@ python3 blackjack.py
 
 ## Python Files: Description + arguments (if applicable) + Examples
 ### BlackJack.py
-Description: Play a game of blackjack against the dealer (computer).
+Description: 
+- Play a game of blackjack against the dealer (computer).
 
 Arguments:
 - Num of decks
@@ -32,7 +33,8 @@ Type 'y' to get another card, or 'n' to pass: y
 ```
 
 ### simulate.py
-Description: Simulate n games of blackjack against the dealer (computer). Status percentage is displayed to show progress during simulation.
+Description: 
+- Simulate n games of blackjack against the dealer (computer). Status percentage is displayed to show progress during simulation.
 
 Arguments:
 - Num of decks
@@ -47,4 +49,15 @@ Player win rate: 48%
 ```
 
 ### BlackJacklAlgo.py
-Description: Where the algorithms are stored. The algorithms are used to play the game of blackjack and called in simulate.py to determine success rate.
+Description:
+- Where the algorithms are stored. The algorithms are used to play the game of blackjack and called in simulate.py to determine success rate.
+
+Algorithms:
+- Simple:
+    - Simple strategy that hits until the player's score is 17 or greater.
+- dHand:
+    - Strategy based on the dealer's first card.
+        - if player hand < 11, always hit
+        - if player hand > 11 and dealer first card < 7, hold
+        - if player hand > 11 and dealer first card + 10 >= 17, hit
+        - if above conditions not met, hold for now.
