@@ -4,6 +4,7 @@
         "ENDC",
         "OKBLUE",
         "OKCYAN",
-        "OKGREEN"
+        "OKGREEN",
+        "tqdm"
     ]
 }
