@@ -22,8 +22,9 @@ Description:
 - Play a game of blackjack against the dealer (computer).
 
 Arguments:
-- Num of decks
+- Num of decks.
 - y to hit, n to stay.
+- q or quit to exit game.
 
 ```
 # Example
@@ -37,7 +38,7 @@ Description:
 - Simulate n games of blackjack against the dealer (computer). Status percentage is displayed to show progress during simulation.
 
 Arguments:
-- Num of decks
+- Num of decks.
 - num of games to simulate.
 
 ```

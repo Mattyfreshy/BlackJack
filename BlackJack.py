@@ -9,6 +9,7 @@ class bcolors:
     BLUE = '\033[94m'
     CYAN = '\033[96m'
     GREEN = '\033[92m'
+    RED = '\033[91m'
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
@@ -41,8 +42,11 @@ def calculate_score(cards):
 
     return sum(cards)
 
-def play_blackjack(num_decks :int) -> None:
-    """Play a game of blackjack."""
+def play_blackjack(num_decks :int) -> int:
+    """
+    Play a game of blackjack.
+    Return: 1 if player wins, 0 otherwise.
+    """
     deck = create_deck(num_decks)
     player_cards = []
     dealer_cards = []
@@ -56,14 +60,18 @@ def play_blackjack(num_decks :int) -> None:
         player_score = calculate_score(player_cards)
         dealer_score = calculate_score(dealer_cards)
 
-        print(f"Your cards: {player_cards}, current score: {player_score}")
-        print(f"Computer's first card: {dealer_cards[0]}")
+        print(f"Your cards: {player_cards}, current score: {player_score if player_score != 0 else 21}")
+        print(f"Dealer's first card: {dealer_cards[0]}")
 
         if player_score == 0 or dealer_score == 0 or player_score > 21:
             is_game_over = True
         else:
             should_continue = input("Type 'y' to get another card, or 'n' to pass: ").lower()
 
+            # Quit the game
+            if should_continue == 'q' or should_continue == 'quit':
+                raise KeyboardInterrupt
+            
             if should_continue == 'y':
                 deal_card(deck, player_cards)
             else:
@@ -73,35 +81,55 @@ def play_blackjack(num_decks :int) -> None:
         deal_card(deck, dealer_cards)
         dealer_score = calculate_score(dealer_cards)
 
-    print(f"{bcolors.CYAN}Your final hand: {player_cards}, final score: {player_score}{bcolors.ENDC}")
-    print(f"{bcolors.CYAN}Computer's final hand: {dealer_cards}, final score: {dealer_score}{bcolors.ENDC}")
+    print() # Newline
+    print(f"{bcolors.CYAN}Your final hand: {player_cards}, final score: {player_score if player_score != 0 else 21}{bcolors.ENDC}")
+    print(f"{bcolors.CYAN}Dealer's final hand: {dealer_cards}, final score: {dealer_score if dealer_score != 0 else 21}{bcolors.ENDC}")
 
 
-    if player_score > 21:
-        print(bcolors.WARNING + "You went over 21. You lose!" + bcolors.ENDC)
-    elif dealer_score > 21:
-        print(bcolors.GREEN + "Computer went over 21. You win!" + bcolors.ENDC)
-    elif player_score == 0:
+    
+    if player_score == 0:
         print(bcolors.GREEN + "Blackjack! You win!" + bcolors.ENDC)
+        return 1
     elif dealer_score == 0:
-        print(bcolors.WARNING + "Computer got a blackjack. You lose!" + bcolors.ENDC)
+        print(bcolors.RED + "Dealer got a blackjack. You lose!" + bcolors.ENDC)
+    elif player_score > 21:
+        print(bcolors.RED + "You went over 21. You lose!" + bcolors.ENDC)
+    elif dealer_score > 21:
+        print(bcolors.GREEN + "Dealer went over 21. You win!" + bcolors.ENDC)
+        return 1
     elif player_score > dealer_score:
         print(bcolors.GREEN + "You win!" + bcolors.ENDC)
+        return 1
     elif player_score == dealer_score:
         print(bcolors.GREEN + "No Loss" + bcolors.ENDC)
     else:
-        print(bcolors.WARNING + "You lose!" + bcolors.ENDC)
+        print(bcolors.RED + "You lose!" + bcolors.ENDC)
+    
+    # return 0 if player loses
+    return 0
 
 def play_real():
     """Play a game of blackjack."""
+    # Game counter and win counter
+    game_count = 0
+    win_count = 0
+
     # Run the game
-    num_decks = int(input("Enter the number of decks to use: "))
     try:
+        # Print the welcome message
+        print("Welcome to Blackjack!")
+        print("To end the game, type 'q' or 'quit'.")
+
+        num_decks = int(input("Enter the number of decks to use: "))
         while True:
             print("-----------------------------------")
-            play_blackjack(num_decks)
+            win_count += play_blackjack(num_decks)
+            game_count += 1
     except KeyboardInterrupt:
-        print("Game interrupted by user.")
+        print("\n")
+        print(f"{bcolors.CYAN} # of games: {str(game_count)}{bcolors.ENDC}")
+        print(f"{bcolors.CYAN} # of wins: {str(win_count)}{bcolors.ENDC}")
+        print(f"{bcolors.CYAN} Win rate: {(win_count / game_count) if game_count != 0 else 0.0}%{bcolors.ENDC}")
 
 def main():
     play_real()
