@@ -1,5 +1,8 @@
 from BlackJack import deal_card, calculate_score, create_deck
 import BlackJackAlgo as algo
+import multiprocessing as mp
+
+PARALLEL_PROGRESS = 0
 
 def play_sim(deck :list[int]):
     """Simulate a game of blackjack."""
@@ -44,11 +47,47 @@ def simulate_games(num_games :int, num_decks :int) -> float:
     win_rate = (wins / num_games) * 100
     return win_rate
 
+def play_parallel(num_games :int, num_decks :int):
+    deck = create_deck(num_decks)
+    player_score, dealer_score = play_sim(deck)
+
+    # Progress bar #!FIXME: Progress bar is inaccurate
+    global PARALLEL_PROGRESS
+    PARALLEL_PROGRESS += 1
+    print(f" {(PARALLEL_PROGRESS / num_games) * 100:.2f}%", end='\r')
+
+    if player_score == 0 or (dealer_score > 21 or dealer_score < player_score):
+        # Return 1 if player wins or computer busts
+            return 1
+    
+    # Return 0 otherwise
+    return 0
+
+def simulate_games_parallel(num_games :int, num_decks :int) -> float:
+    """Simulate a number of games in parallel and return the win rate."""
+    # Parallel processing
+    with mp.Pool(mp.cpu_count()) as p:
+        # Result is a list of 1s and 0s (1 if player wins, 0 otherwise)
+        result = p.starmap(play_parallel, [(num_games, num_decks) for _ in range(num_games)])
+
+    wins = sum(result)
+    win_rate = (wins / num_games) * 100
+    return win_rate
+
 def main():
     num_decks = int(input("Enter the number of decks to use: "))
     num_games = int(input("Enter the number of games to simulate: "))
     
-    win_rate = simulate_games(num_games, num_decks)
+    # Simulate games
+    accuracy = 100000
+    if num_games < accuracy:
+        print(f"Warning: Simulating less than {accuracy} games may result in inaccurate results.")
+        print("Simulating games sequentially...")
+        win_rate = simulate_games(num_games, num_decks)
+    else:
+        print("Simulating games in parallel...")
+        win_rate = simulate_games_parallel(num_games, num_decks)
+
     print(f"Simulated {num_games} games with {num_decks} deck(s).")
     print(f"Player win rate: {win_rate:.2f}%")
 
