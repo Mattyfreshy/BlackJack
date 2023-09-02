@@ -129,7 +129,7 @@ def play_real():
         print("\n")
         print(f"{bcolors.CYAN} # of games: {str(game_count)}{bcolors.ENDC}")
         print(f"{bcolors.CYAN} # of wins: {str(win_count)}{bcolors.ENDC}")
-        print(f"{bcolors.CYAN} Win rate: {(win_count / game_count) if game_count != 0 else 0.0}%{bcolors.ENDC}")
+        print(f"{bcolors.CYAN} Win rate: {(win_count / game_count)*100 if game_count != 0 else 0.00:.2f}%{bcolors.ENDC}")
 
 def main():
     play_real()
