@@ -66,9 +66,10 @@ def simulate_games_parallel(num_games :int, num_decks :int) -> float:
     
     # Parallelize the game simulations using Spark
     games_rdd = sc.parallelize(range(num_games))
-    results = games_rdd.map(lambda _: play_parallel(num_decks))
 
-    wins = results.reduce(lambda x, y: x + y)
+    wins = games_rdd.map(lambda _: play_parallel(num_decks)).reduce(lambda x, y: x + y)
+    sc.stop()
+
     win_rate = (wins / num_games) * 100
     return win_rate
 
