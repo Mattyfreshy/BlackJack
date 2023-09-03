@@ -35,7 +35,7 @@ Type 'y' to get another card, or 'n' to pass: y
 
 ### simulate.py
 Description: 
-- Simulate n games of blackjack against the dealer (computer). Status percentage is displayed to show progress during simulation.
+- Simulate n games of blackjack against the dealer (computer). Status percentage is displayed to show progress during simulation. Can be run sequentially or in parallel depending on number of games to simulate.
 
 Arguments:
 - Num of decks.
@@ -49,14 +49,14 @@ Simulated 1000000 games with 8 deck(s).
 Player win rate: 48%
 ```
 
-### BlackJacklAlgo.py
+### BlackJackAlgo.py
 Description:
 - Where the algorithms are stored. The algorithms are used to play the game of blackjack and called in simulate.py to determine success rate.
 
 Algorithms:
-- Simple:
+- Simple (73% win rate):
     - Simple strategy that hits until the player's score is 17 or greater.
-- dHand:
+- dHand (81.4% win rate):
     - Strategy based on the dealer's first card.
         - if player hand < 11, always hit
         - if player hand > 11 and dealer first card < 7, hold

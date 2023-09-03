@@ -5,6 +5,7 @@
         "OKBLUE",
         "OKCYAN",
         "OKGREEN",
+        "pbar",
         "tqdm"
     ]
 }

@@ -1,8 +1,9 @@
 from BlackJack import deal_card, calculate_score, create_deck
 import BlackJackAlgo as algo
 import multiprocessing as mp
+from concurrent.futures import ThreadPoolExecutor
+from tqdm import tqdm
 
-PARALLEL_PROGRESS = 0
 
 def play_sim(deck :list[int]):
     """Simulate a game of blackjack."""
@@ -31,30 +32,25 @@ def play_sim(deck :list[int]):
     return player_score, dealer_score
 
 def simulate_games(num_games :int, num_decks :int) -> float:
-    """Simulate a number of games and return the win rate."""
+    """Simulate a number of games sequently and return the win rate."""
     wins = 0
-    for i in range(num_games):
+    for i in tqdm(range(num_games)):
         deck = create_deck(num_decks)
         player_score, dealer_score = play_sim(deck)
         
         if player_score == 0 or (dealer_score > 21 or dealer_score < player_score):
             # Player wins or computer busts
              wins += 1
-
-        # Progress bar
-        print(f" {(i / num_games) * 100:.2f}%", end='\r')
+        
+        # Progress bar using print
+        # print(f" {(i / num_games) * 100:.2f}%", end='\r')
 
     win_rate = (wins / num_games) * 100
     return win_rate
 
-def play_parallel(num_games :int, num_decks :int):
+def play_parallel(num_decks :int):
     deck = create_deck(num_decks)
     player_score, dealer_score = play_sim(deck)
-
-    # Progress bar #!FIXME: Progress bar is inaccurate
-    global PARALLEL_PROGRESS
-    PARALLEL_PROGRESS += 1
-    print(f" {(PARALLEL_PROGRESS / num_games) * 100:.2f}%", end='\r')
 
     if player_score == 0 or (dealer_score > 21 or dealer_score < player_score):
         # Return 1 if player wins or computer busts
@@ -65,12 +61,24 @@ def play_parallel(num_games :int, num_decks :int):
 
 def simulate_games_parallel(num_games :int, num_decks :int) -> float:
     """Simulate a number of games in parallel and return the win rate."""
-    # Parallel processing
-    with mp.Pool(mp.cpu_count()) as p:
-        # Result is a list of 1s and 0s (1 if player wins, 0 otherwise)
-        result = p.starmap(play_parallel, [(num_games, num_decks) for _ in range(num_games)])
+    pbar = tqdm(total=num_games)
 
-    wins = sum(result)
+    def update_progress(result):
+        pbar.update(1)
+    
+    with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
+        futures = [executor.submit(play_parallel, num_decks) for _ in range(num_games)]
+        for future in futures:
+            future.add_done_callback(update_progress)
+        
+        results = [future.result() for future in futures]
+
+    # # Parallel processing
+    # with mp.Pool(mp.cpu_count()) as p:
+    #     # Result is a list of 1s and 0s (1 if player wins, 0 otherwise)
+    #     result = p.starmap(play_parallel, [(pbar, num_decks) for _ in range(num_games)])
+
+    wins = sum(results)
     win_rate = (wins / num_games) * 100
     return win_rate
 
