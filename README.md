@@ -35,7 +35,7 @@ Type 'y' to get another card, or 'n' to pass: y
 
 ### simulate.py
 Description: 
-- Simulate n games of blackjack against the dealer (computer). Status percentage is displayed to show progress during simulation. Can be run sequentially or in parallel depending on number of games to simulate.
+- Simulate n games of blackjack against the dealer (computer). Status percentage is displayed to show progress during simulation. Can be run sequentially or in parallel depending on number of games to simulate. Uses pyspark to run in parallel.
 
 Arguments:
 - Num of decks.

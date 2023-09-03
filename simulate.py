@@ -1,8 +1,8 @@
-from BlackJack import deal_card, calculate_score, create_deck
+from BlackJack import deal_card, calculate_score, create_deck, bcolors
 import BlackJackAlgo as algo
-import multiprocessing as mp
-from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
+from pyspark import SparkContext
+
 
 
 def play_sim(deck :list[int]):
@@ -61,24 +61,14 @@ def play_parallel(num_decks :int):
 
 def simulate_games_parallel(num_games :int, num_decks :int) -> float:
     """Simulate a number of games in parallel and return the win rate."""
-    pbar = tqdm(total=num_games)
-
-    def update_progress(result):
-        pbar.update(1)
+    # Initialize a SparkContext
+    sc = SparkContext("local", "BlackjackSimulation")
     
-    with ThreadPoolExecutor(max_workers=mp.cpu_count()) as executor:
-        futures = [executor.submit(play_parallel, num_decks) for _ in range(num_games)]
-        for future in futures:
-            future.add_done_callback(update_progress)
-        
-        results = [future.result() for future in futures]
+    # Parallelize the game simulations using Spark
+    games_rdd = sc.parallelize(range(num_games))
+    results = games_rdd.map(lambda _: play_parallel(num_decks))
 
-    # # Parallel processing
-    # with mp.Pool(mp.cpu_count()) as p:
-    #     # Result is a list of 1s and 0s (1 if player wins, 0 otherwise)
-    #     result = p.starmap(play_parallel, [(pbar, num_decks) for _ in range(num_games)])
-
-    wins = sum(results)
+    wins = results.reduce(lambda x, y: x + y)
     win_rate = (wins / num_games) * 100
     return win_rate
 
@@ -89,15 +79,15 @@ def main():
     # Simulate games
     accuracy = 100000
     if num_games < accuracy:
-        print(f"Warning: Simulating less than {accuracy} games may result in inaccurate results.")
-        print("Simulating games sequentially...")
+        print(f"{bcolors.WARNING}Warning: Simulating less than {accuracy} games may result in inaccurate results.{bcolors.ENDC}")
+        print(f"{bcolors.CYAN}Simulating games sequentially...{bcolors.ENDC}")
         win_rate = simulate_games(num_games, num_decks)
     else:
-        print("Simulating games in parallel...")
+        print(f"{bcolors.CYAN}Simulating games in parallel...{bcolors.ENDC}")
         win_rate = simulate_games_parallel(num_games, num_decks)
 
-    print(f"Simulated {num_games} games with {num_decks} deck(s).")
-    print(f"Player win rate: {win_rate:.2f}%")
+    print(f"{bcolors.GREEN}Simulated {num_games} games with {num_decks} deck(s).{bcolors.ENDC}")
+    print(f"{bcolors.GREEN}Player win rate: {win_rate:.2f}%{bcolors.ENDC}")
 
 if __name__ == "__main__":
     main()
