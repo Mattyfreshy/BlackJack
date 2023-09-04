@@ -10,10 +10,42 @@ The game is played with a standard 52 card deck. The goal is to get as close to 
 - The dealer must hit if their hand is less than 17.
 - The dealer must stay if their hand is greater than or equal to 17.
 
+## Setup
+
+1. If you don’t have Python installed, [install it from here](https://www.python.org/downloads/).
+
+2. Clone this repository.
+
+3. Navigate into the project directory:
+
+   ```bash
+   cd BlackJack
+   ```
+
+4. Create a new virtual environment:
+
+   ```bash
+   python -m venv venv
+   . venv/bin/activate
+   ```
+
+5. Install the requirements:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
 ## How to Run
-To run the program, simply run the following command in the terminal:
+To run the program, simply run the following command in the terminal depending if you want to play the game or simulate games:  
+
+To play the game:
 ```
 python3 blackjack.py
+```
+
+To simulate games:
+```
+python3 simulate.py
 ```
 
 ## Python Files: Description + arguments (if applicable) + Examples
