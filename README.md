@@ -30,7 +30,6 @@ Arguments:
 # Example
 Enter the number of decks to use: 8
 Type 'y' to get another card, or 'n' to pass: y
-
 ```
 
 ### simulate.py
