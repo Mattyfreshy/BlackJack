@@ -56,7 +56,13 @@ Description:
 Algorithms:
 - Simple (73% win rate):
     - Simple strategy that hits until the player's score is 17 or greater.
-- dHand (81.4% win rate):
+- beta (79.18% win rate):
+    - Strategy based on the dealer's first card.
+        - if player hand <= 14, always hit
+        - if player hand > 14 and dealer first card < 7, hold
+        - if dealer first card >= 7 and player hand < dealer first card + 10, hit
+        - if above conditions not met, hold for now.
+- dHand (81.44% win rate):
     - Strategy based on the dealer's first card.
         - if player hand < 11, always hit
         - if player hand > 11 and dealer first card < 7, hold

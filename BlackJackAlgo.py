@@ -16,7 +16,7 @@ def black_jack_dHand(deck :list[int], player_score :int, player_cards :list, dea
     Strategy based on the dealer's first card.
         - if player hand <= 11, always hit
         - if player hand > 11 and dealer first card < 7, hold
-        - if player hand > 11 and dealer first card + 10 >= 17, hit
+        - if player hand > 11 and dealer first card >= 7, hit
         - if above conditions not met, hold for now.
     """
     """ 81.4% success rate """
@@ -27,29 +27,29 @@ def black_jack_dHand(deck :list[int], player_score :int, player_cards :list, dea
         return False
     elif player_score > 11 and dealer_first_card < 7:
         return True
-    elif player_score > 11 and dealer_first_card + 10 >= 17:
+    elif player_score > 11 and dealer_first_card >= 7:
         deal_card(deck, player_cards)
         return False
 
     return True
 
-def black_jack_alpha(deck :list[int], player_score :int, player_cards :list, dealer_cards :list):
-    """ A 2 3 4 5 6 7 8 9 10 J Q K
+def black_jack_beta(deck :list[int], player_score :int, player_cards :list, dealer_cards :list):
+    """
     Strategy based on the dealer's first card.
         - if player hand <= 14, always hit
         - if player hand > 14 and dealer first card < 7, hold
-        - if dealer first card + 10 >= 17 and player hand < dealer first card + 10, hit
+        - if dealer first card >= 7 and player hand < dealer first card + 10, hit
         - if above conditions not met, hold for now.
     """
-    """ 81.44% success rate """
+    """ 79.18% success rate """
     dealer_first_card = dealer_cards[0]
 
-    if player_score <= 11:
+    if player_score <= 14:
         deal_card(deck, player_cards)
         return False
-    elif player_score > 11 and dealer_first_card < 7:
+    elif player_score > 14 and dealer_first_card < 7:
         return True
-    elif player_score > 11 and dealer_first_card + 10 >= 17:
+    elif dealer_first_card >= 7 and sum(player_cards) < dealer_first_card + 10:
         deal_card(deck, player_cards)
         return False
 
@@ -62,7 +62,7 @@ def black_jack_strategy(deck :list[int], player_score :int, player_cards :list, 
     # return black_jack_simple(deck, player_score, player_cards)
 
     # Dealer's Hand
-    return black_jack_dHand(deck, player_score, player_cards, dealer_cards)
+    # return black_jack_dHand(deck, player_score, player_cards, dealer_cards)
 
     # Alpha
-    # return black_jack_alpha(deck, player_score, player_cards, dealer_cards)
+    return black_jack_beta(deck, player_score, player_cards, dealer_cards)
